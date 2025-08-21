@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}
+    <style>
+        .round-left{
+            border-top-left-radius:10px;
+            border-bottom-left-radius: 10px;
+        }
+        .round-right{
+            border-top-right-radius:10px;
+            border-bottom-right-radius: 10px;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col justify-center items-center h-screen">
+
+    <div class="flex shadow-4xl">
+            <img src="{% static 'images/side.png' %}" alt="SIDEIMG" class="h-[500px] w-[500px] round-left hidden lg:block">
+
+        <div
+            class="bg-white/20 backdrop-blur-lg p-8 round-left round-right shadow-xl flex flex-col gap-y-6 w-[400px] border border-white/20">
+            <h1 class="text-white font-bold text-3xl text-center">Create Account</h1>
+
+            <form action="" method="POST" class="flex flex-col gap-y-5">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-2 gap-x-4">
+                    <small class="text-red-500">
+                        {{form.first_name.errors}}
+                    </small>
+                    <small class="text-red-500">
+                        {{form.last_name.errors}}
+                    </small>
+                    <input type="text" name="first_name" placeholder="First Name" required
+                        class="p-3 rounded-lg bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-sky-400">
+                    <input type="text" name="last_name" placeholder="Last Name" required
+                        class="p-3 rounded-lg bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-sky-400">
+                </div>
+                <small class="text-red-500">
+                    {{form.email.errors}}
+                </small>
+                <input type="email" name="email" placeholder="Email" required
+                    class="p-3 rounded-lg bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-sky-400">
+                <small class="text-red-500">
+                    {{form.phone_number.errors}}
+                </small>
+                <input type="text" name="phone_number" placeholder="Mobile" required
+                    class="p-3 rounded-lg bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-sky-400">
+
+                <div class="grid grid-cols-2 gap-x-4">
+                    <small class="text-red-500">
+                        {{ form.password1.errors }}
+                    </small>
+                    <small class="text-red-500">
+                        {{ form.password2.errors }}
+                    </small>
+                    <input type="password" name="password1" placeholder="Password" required
+                        class="p-3 rounded-lg bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-sky-400">
+                    <input type="password" name="password2" placeholder="Confirm Password" required
+                        class="p-3 rounded-lg bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-sky-400">
+                </div>
+
+                <input type="submit" value="Register"
+                    class="bg-gradient-to-br from-slate-900 to-sky-800 hover:from-slate-800 hover:to-sky-700 text-white p-3 rounded-lg cursor-pointer font-semibold transition">
+            </form>
+
+        </div>
+
+    </div>
+    <br>
+    <p>
+        Already have an account? <a href="{% url 'login' %}">Log In</a>
+    </p>
+
+</body>
+
+</html>

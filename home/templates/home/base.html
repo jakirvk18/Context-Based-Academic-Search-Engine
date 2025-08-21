@@ -1,0 +1,161 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Smart Academic Search</title>
+    <link rel="icon" href="{% static 'images/logo.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .animate-scaleup {
+            animation: scaleup 0.6s ease-out;
+        }
+
+        .animate-slidedown {
+            animation: slidedown 0.6s ease-out;
+        }
+
+        .animate-fadein {
+            animation: fadein 0.6s ease-out;
+        }
+
+        @keyframes scaleup {
+            0% {
+                transform: scale(.98)
+            }
+
+            100% {
+                transform: scale(1)
+            }
+        }
+
+        @keyframes slidedown {
+            0% {
+                transform: translateY(-8%)
+            }
+
+            100% {
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes fadein {
+            0% {
+                opacity: 0
+            }
+
+            100% {
+                opacity: 1
+            }
+        }
+
+        body {
+            background-image: url("{% static 'images/background.png' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+
+<body class="min-h-screen">
+    <header class="flex justify-end p-2 items-center text-white sticky top-0 z-20">
+        <div class="absolute left-4 p-2 flex items-center">
+            <button id="sidebarToggle" class="text-white text-2xl mr-4">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <div class="flex items-center gap-4 ml-auto">
+            {% if user.is_authenticated %}
+            <p class="px-6 py-2 bg-white/30 rounded-[30px]">Hi, {{ user.first_name }}</p>
+            <div class="relative inline-block text-left">
+                <button id="menuButton" class="px-4 py-2 flex items-center gap-x-2">
+                    {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="pfp" class="h-10 w-10 rounded-full shadow-md">
+                    {% else %}
+                    <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-700">U
+                    </div>
+                    {% endif %}
+                    <i class="fa-solid fa-circle-chevron-down"></i>
+                </button>
+                <div id="menuDropdown" class="absolute right-0 mt-2 w-40 bg-gray-900 rounded shadow-lg hidden">
+                    <a href="{% url 'user' %}" class="block px-4 py-2 hover:bg-gray-500">Settings</a>
+                    <a href="{% url 'logout' %}" class="block px-4 py-2 hover:bg-gray-500">Logout</a>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="px-4 py-2 bg-white/30 rounded">Login</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <div id="sidebar"
+        class="fixed top-0 left-0 h-full w-64 bg-blue-900/10 text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-30">
+        <div class="p-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold flex items-center">Menu</h2>
+            <button id="sidebarClose" class="text-white text-xl flex items-center">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <nav class="mt-4 grid grid-cols-1 items-center p-4 gap-y-2 w-full">
+            <a href="{% url 'home:home' %}"
+                class="block py-2 px-4 bg-gray-700/30 rounded-lg hover:bg-gray-700/60 transition-colors duration-200">
+                <i class="fa-solid fa-home mr-2"></i> Home
+            </a>
+            <a href="{% url 'home:saved' %}"
+                class="block py-2 px-4 bg-gray-700/30 rounded-lg hover:bg-gray-700/60 transition-colors duration-200">
+                <i class="fa-regular fa-bookmark"></i> Saved
+            </a>
+            <a href="{% url 'home:history' %}"
+                class="block py-2 px-4 bg-gray-700/30 rounded-lg hover:bg-gray-700/60 transition-colors duration-200">
+                <i class="fa-solid fa-server mr-2"></i> History
+            </a>
+
+            <a href="{% url 'home:upload_doc' %}"
+                class="block absolute bottom-4 py-2 px-4 bg-blue-500 hover:bg-blue-600 rounded-lg shadow-lg w-56 text-center"
+                title=".pdf files only">
+                <i class="fa-solid fa-upload mr-2"></i> Upload Doc
+            </a>
+        </nav>
+    </div>
+
+    <main class="max-w-5xl mx-auto px-4 py-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="relative bottom-0 w-full py-4 text-center text-[10px] font-arial text-white/60">
+        &copy; Designed and Developed with ❤️ By <a href="https://github.com/jakirvk18"
+            class="text-red-700 hover:underline" target="_blank">zakir hussain</a>
+    </footer>
+
+    <script>
+        const menuButton = document.getElementById('menuButton');
+        const menuDropdown = document.getElementById('menuDropdown');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarClose = document.getElementById('sidebarClose');
+        const sidebar = document.getElementById('sidebar');
+
+        if (menuButton) {
+            menuButton.addEventListener('click', () => menuDropdown.classList.toggle('hidden'));
+            document.addEventListener('click', (e) => {
+                if (!menuButton.contains(e.target) && !menuDropdown.contains(e.target)) menuDropdown.classList.add('hidden');
+            });
+        }
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.remove('-translate-x-full');
+            sidebarToggle.style.display = 'none';
+        });
+
+        sidebarClose.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            sidebarToggle.style.display = 'block';
+        });
+    </script>
+</body>
+
+</html>

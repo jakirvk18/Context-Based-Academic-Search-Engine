@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Document</title>
+    <!-- TailwindCSS (if not already included in base.html) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome (if not already included in base.html) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center">
+
+    <section class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-shadow duration-200 hover:shadow-xl w-full max-w-lg">
+        <h2 class="text-2xl font-semibold mb-4 flex items-center gap-2 text-gray-800 dark:text-gray-200">
+            <i class="fas fa-cloud-upload-alt text-indigo-500"></i>
+            Upload PDF
+        </h2>
+
+        <form method="post" enctype="multipart/form-data" class="flex flex-col space-y-4">
+            {% csrf_token %}
+
+            <!-- File Upload -->
+            <label for="id_pdf_file"
+                   class="flex items-center justify-center w-full px-4 py-8 border-2 border-dashed border-gray-300 
+                          dark:border-gray-600 rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 
+                          transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-600">
+                <input type="file" id="id_pdf_file" name="document" accept=".pdf"
+                       class="hidden" onchange="updateFileName(this)" />
+                <span id="file-name-display" class="text-center text-gray-500 dark:text-gray-400">
+                    Drag & drop your PDF here, or click to select a file
+                </span>
+            </label>
+            <p>{{error}}</p>
+            <!-- Upload Button -->
+            <button type="submit"
+                    id="upload-button"
+                    class="flex items-center justify-center gap-2 px-6 py-3 font-medium rounded-lg 
+                           transition-colors duration-200 bg-gray-300 text-gray-500 cursor-not-allowed"
+                    disabled>
+                <i class="fas fa-cloud-upload-alt"></i>
+                Upload
+            </button>
+        </form>
+    </section>
+
+    <script>
+        // Update file name and enable button when a file is chosen
+        function updateFileName(input) {
+            const fileNameDisplay = document.getElementById('file-name-display');
+            const uploadButton = document.getElementById('upload-button');
+
+            if (input.files && input.files[0]) {
+                fileNameDisplay.textContent = input.files[0].name;
+                uploadButton.disabled = false;
+                uploadButton.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                uploadButton.classList.add('bg-indigo-600', 'hover:bg-indigo-700', 'text-white');
+            } else {
+                fileNameDisplay.textContent = 'Drag & drop your PDF here, or click to select a file';
+                uploadButton.disabled = true;
+                uploadButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700', 'text-white');
+                uploadButton.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+            }
+        }
+    </script>
+
+</body>
+</html>

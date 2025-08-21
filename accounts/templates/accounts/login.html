@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    {% load static %}
+    <link rel="icon" href="{% static 'images/logo.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Import Inter font for a modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .round-left{
+            border-top-left-radius:10px;
+            border-bottom-left-radius: 10px;
+        }
+        .round-right{
+            border-top-right-radius:10px;
+            border-bottom-right-radius: 10px;
+        }
+        
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen flex-col bg-gradient-to-br from-gray-900 to-gray-800  p-4">
+
+   <div class="flex shadow-4xl">
+     <!-- Login Form Container -->
+    <form method="POST" class="bg-gray-800 p-8 w-full max-w-sm border border-gray-700 transform min-w-[350px] round-left round-right ">
+        <!-- CSRF Token (Django specific, kept as is) -->
+        {% csrf_token %}
+
+        <h1 class="text-3xl font-extrabold mb-6 text-center text-white">Welcome Back!</h1>
+
+        <!-- Messages Display Area -->
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <p class="text-red-400 bg-red-900/20 p-3 rounded-lg text-sm mb-2">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Email Input Group -->
+        <div class="mb-5">
+            <label for="email" class="block text-gray-300 text-sm font-semibold mb-2">Email</label>
+            <input type="email" name="email" id="email" class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:ring-blue-500 focus:border-blue-500 transition duration-200 placeholder-gray-500" placeholder="your@example.com" required>
+        </div>
+
+        <!-- Password Input Group -->
+        <div class="mb-6">
+            <label for="password" class="block text-gray-300 text-sm font-semibold mb-2">Password</label>
+            <input type="password" name="password" id="password" class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:ring-blue-500 focus:border-blue-500 transition duration-200 placeholder-gray-500" placeholder="••••••••" required>
+        </div>
+
+        <!-- Login Button -->
+        <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg font-bold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-200 transform hover:-translate-y-1 active:translate-y-0">
+            Login
+        </button>
+    </form>
+    <img src="{% static 'images/side.png' %}" alt="SIDEIMG" class="h-[500px] w-[500px] round-right hidden lg:block">
+   </div>
+
+    <!-- Sign Up Link -->
+    <p class="mt-8 text-center text-gray-400 text-base">
+        Don't have an account?
+        <a href="{% url 'create-account' %}" class="text-blue-400 hover:text-blue-300 font-bold hover:underline transition duration-200">Sign Up</a>
+    </p>
+
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body
+  class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-black via-gray-900 to-blue-900 text-white">
+
+  <!-- Back button -->
+  <a href="{% url 'home:home' %}"
+    class="absolute top-4 left-4 bg-white/20 hover:bg-white/40 text-white px-4 py-2 rounded-full shadow-md backdrop-blur transition">
+    <i class="fa-solid fa-arrow-left"></i>
+  </a>
+
+  <!-- Profile Header -->
+  <div class="flex flex-col items-center mb-6 mt-8 animate-fadeIn">
+    <img src="{{ user.profile_picture.url }}" alt="Profile Picture"
+      class="h-24 w-24 rounded-full border-4 border-blue-500 shadow-xl object-cover">
+    <h2 class="mt-3 text-3xl font-bold tracking-wide">
+      {{ user.first_name|title }} {{ user.last_name|title }}
+    </h2>
+    <p class="text-sm text-white/50">Manage your account details</p>
+  </div>
+
+  <!-- Card -->
+  <div
+    class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-8 w-[90%] max-w-4xl animate-slideUp">
+
+    <!-- Header -->
+    <div class="mb-6 pb-4 border-b border-white/20">
+      <h3 class="text-xl font-semibold flex items-center gap-2">
+        <i class="fa-solid fa-user-pen text-blue-400"></i> Update Profile
+      </h3>
+    </div>
+
+    <!-- Form -->
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Profile Picture -->
+      <div>
+        <label class="block text-sm font-medium mb-2">Profile Picture</label>
+        <div class="flex items-center gap-4">
+          <img src="{{ user.profile_picture.url }}" alt="pfp"
+            class="h-16 w-16 rounded-full border object-cover shadow-md">
+          <input type="file" name="profile_picture"
+            class="text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer transition">
+        </div>
+      </div>
+
+      <!-- Name Row -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium mb-2">First Name</label>
+          <input type="text" name="first_name" value="{{ user.first_name }}"
+            class="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 focus:ring-2 focus:ring-blue-500 outline-none placeholder-white/50 transition hover:shadow-lg hover:border-blue-400">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2">Last Name</label>
+          <input type="text" name="last_name" value="{{ user.last_name }}"
+            class="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 focus:ring-2 focus:ring-blue-500 outline-none placeholder-white/50 transition hover:shadow-lg hover:border-blue-400">
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-medium mb-2">Email</label>
+        <input type="email" name="email" value="{{ user.email }}"
+          class="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 focus:ring-2 focus:ring-blue-500 outline-none placeholder-white/50 transition hover:shadow-lg hover:border-blue-400">
+      </div>
+
+      <!-- Mobile -->
+      <div>
+        <label class="block text-sm font-medium mb-2">Mobile</label>
+        <input type="text" name="phone_number" value="{{ user.phone_number }}"
+          class="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 focus:ring-2 focus:ring-blue-500 outline-none placeholder-white/50 transition hover:shadow-lg hover:border-blue-400">
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Password with toggle -->
+      <div>
+        <label class="block text-sm font-medium mb-2">New Password</label>
+        <div class="relative">
+          <input type="password" id="password" name="password1" placeholder="Enter new password"
+            class="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 focus:ring-2 focus:ring-blue-500 outline-none placeholder-white/50 transition hover:shadow-lg hover:border-blue-400">
+          <i class="fa-solid fa-eye absolute right-3 top-3 cursor-pointer text-white/60 hover:text-white"
+            id="togglePassword"></i>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div>
+        <label class="block text-sm font-medium mb-2">Confirm Password</label>
+        <div class="relative">
+          <input type="password" id="confirm_password" name="password2" placeholder="Confirm new password"
+            class="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 focus:ring-2 focus:ring-blue-500 outline-none placeholder-white/50 transition hover:shadow-lg hover:border-blue-400">
+          <i class="fa-solid fa-eye absolute right-3 top-3 cursor-pointer text-white/60 hover:text-white"
+            id="toggleConfirmPassword"></i>
+        </div>
+      </div>
+      </div>
+
+      <!-- Messages -->
+      {% if messages %}
+      <div class="mb-4">
+        {% for message in messages %}
+        <p
+          class="{% if message.tags == 'success' %}text-green-300 bg-green-900/30{% else %}text-red-300 bg-red-900/30{% endif %} p-3 rounded-lg text-sm mb-2 shadow-md">
+          {{ message }}
+        </p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Submit -->
+      <div class="pt-2">
+        <button type="submit"
+          class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white rounded-lg font-semibold shadow-lg transition transform hover:scale-[1.02]">
+          <i class="fa-solid fa-floppy-disk mr-2"></i> Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <br><br>
+  <h2 class="text-xl font-bold mb-4">My Documents</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-[50px]">
+    {% for pdf in pdfs %}
+    <div class="bg-black/30 rounded-lg shadow-md p-4">
+      <h3 class="font-semibold text-md">{{ pdf.title }}</h3>
+      <p class="text-sm text-gray-600">{{ pdf.description }}</p>
+      <a href="{{ pdf.file.url }}" class="text-blue-500 hover:underline font-bold text-shadow-xl">View PDF</a>
+    </div>
+    {% empty %}
+    <p class="text-gray-500">No PDFs uploaded yet.</p>
+    {% endfor %}
+  </div>
+  <footer class="relative bottom-0 w-full py-4 text-center text-[10px] font-arial text-white/60">
+        &copy; Designed and Developed with ❤️ By <a href="https://github.com/jakirvk18"
+            class="text-red-700 hover:underline" target="_blank">zakir hussain</a>
+    </footer>
+  <!-- Animations -->
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fadeIn {
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .animate-slideUp {
+      animation: slideUp 0.8s ease-out;
+    }
+  </style>
+
+  <!-- Toggle Password Script -->
+  <script>
+    const togglePassword = document.querySelector("#togglePassword");
+    const password = document.querySelector("#password");
+
+    togglePassword.addEventListener("click", function () {
+      const type = password.getAttribute("type") === "password" ? "text" : "password";
+      password.setAttribute("type", type);
+      this.classList.toggle("fa-eye-slash");
+    });
+
+    const toggleConfirmPassword = document.querySelector("#toggleConfirmPassword");
+    const confirmPassword = document.querySelector("#confirm_password");
+
+    toggleConfirmPassword.addEventListener("click", function () {
+      const type = confirmPassword.getAttribute("type") === "password" ? "text" : "password";
+      confirmPassword.setAttribute("type", type);
+      this.classList.toggle("fa-eye-slash");
+    });
+  </script>
+
+</body>
+</html>
