@@ -6,12 +6,82 @@ This Django application is a powerful, context-based search engine designed for 
 
 ## Features
 
-* **Intelligent PDF Processing**: Extracts key information such as author, title, abstract, and full text directly from PDF files.
-* **Vector Embeddings**: Leverages pre-trained `SentenceTransformer` models to create **vector embeddings** for each document, capturing their semantic meaning.
-* **Hybrid Search Algorithm**: Combines the efficiency of **BM25** (Best Match 25) for keyword-based ranking with the conceptual power of **semantic similarity** using vector embeddings.
-* **Author-Based Boosting**: Provides a significant score boost to documents where the author's name matches or is closely related to the query, enhancing discoverability of specific works.
-* **Query Enhancement**: Automatically corrects spelling errors using `difflib` and expands queries with relevant synonyms from `WordNet` to ensure comprehensive search results.
-* **Robust Indexing**: Processes and indexes documents to create a searchable database, including a rich vocabulary for spell correction.
+* **Intelligent PDF Processing**: Extracts key information such as author, title, abstract, and full text directly from PDF files. This data is then used to enrich the search index.
+* **Vector Embeddings**: Leverages pre-trained `SentenceTransformer` models to create **vector embeddings** for each document. These numerical representations capture the semantic meaning, which is crucial for finding related documents even if they don't share the same keywords.
+* **Hybrid Search Algorithm**: The core of the application, it blends two powerful search techniques:
+    1.  **BM25 (Best Match 25)**: A classic keyword-matching algorithm that ranks documents based on term frequency and document length. The implementation boosts important fields like author and title, giving them more weight.
+    2.  **Semantic Similarity**: Uses the generated vector embeddings to find documents that are conceptually similar to the user's query, providing more intelligent search results.
+* **Author-Based Boosting**: A significant score boost is applied to documents where the author's name matches or is closely related to the query, greatly enhancing the discoverability of specific works.
+* **Query Enhancement**: Automatically refines user queries by:
+    * **Spell Correction**: Using `difflib` to correct spelling errors.
+    * **Synonym Expansion**: Expanding queries with relevant synonyms from `WordNet` to ensure comprehensive coverage.
+* **Robust Indexing**: Processes and indexes academic PDF documents to create a searchable database. This includes building a rich vocabulary used for spell correction and semantic matching.
+
+---
+
+## Folder Structure
+```bash
+Markdown
+
+# Context-Based-Academic-Search-Engine 📚
+
+This Django application is a powerful, context-based search engine designed for academic documents. It uses a **hybrid search** approach to provide highly relevant and accurate results by combining traditional keyword matching with modern semantic search capabilities.
+
+---
+
+## Features
+
+* **Intelligent PDF Processing**: Extracts key information such as author, title, abstract, and full text directly from PDF files. This data is then used to enrich the search index.
+* **Vector Embeddings**: Leverages pre-trained `SentenceTransformer` models to create **vector embeddings** for each document. These numerical representations capture the semantic meaning, which is crucial for finding related documents even if they don't share the same keywords.
+* **Hybrid Search Algorithm**: The core of the application, it blends two powerful search techniques:
+    1.  **BM25 (Best Match 25)**: A classic keyword-matching algorithm that ranks documents based on term frequency and document length. The implementation boosts important fields like author and title, giving them more weight.
+    2.  **Semantic Similarity**: Uses the generated vector embeddings to find documents that are conceptually similar to the user's query, providing more intelligent search results.
+* **Author-Based Boosting**: A significant score boost is applied to documents where the author's name matches or is closely related to the query, greatly enhancing the discoverability of specific works.
+* **Query Enhancement**: Automatically refines user queries by:
+    * **Spell Correction**: Using `difflib` to correct spelling errors.
+    * **Synonym Expansion**: Expanding queries with relevant synonyms from `WordNet` to ensure comprehensive coverage.
+* **Robust Indexing**: Processes and indexes academic PDF documents to create a searchable database. This includes building a rich vocabulary used for spell correction and semantic matching.
+
+---
+
+## Folder Structure
+
+searchengine/  
+├── accounts/                  # Django app for user authentication, registration, profiles
+│   ├── pycache/
+│   ├── migrations/
+│   ├── templates/
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── tests.py
+│   └── urls.py
+├── home/                      # Core Django app for search engine UI and logic
+│   ├── pycache/
+│   ├── management/commands/   # Custom commands (e.g., for PDF processing)
+│   ├── migrations/
+│   ├── templates/home/        # HTML templates for home app (e.g., search page)
+│   ├── init.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py              # Database models for processed documents (metadata, embeddings)
+│   ├── tests.py
+│   ├── urls.py                # URL patterns for the home app
+│   ├── utils.py               # Utility functions, including PDF processing and search logic
+│   └── views.py               # Handles web requests and renders search results
+├── media/                     # Stores user-uploaded files (e.g., original PDF documents)
+├── searchengine/              # Django project configuration
+│   ├── init.py
+│   ├── asgi.py
+│   ├── settings.py            # Project settings
+│   ├── urls.py                # Project-level URL dispatcher
+│   └── wsgi.py
+├── static/                    # Static files (CSS, JS, images, etc.) for the app
+├── staticfiles/               # Collected static files (used in deployment)
+├── db.sqlite3                 # Default SQLite database file
+├── manage.py                  # Django's command-line utility
+└── requirements.txt           # List of Python dependencies
+```
 
 ---
 
@@ -28,58 +98,65 @@ This Django application is a powerful, context-based search engine designed for 
     source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
     ```
 3.  **Install Dependencies**:
+    Create a `requirements.txt` file in your project root with the following content:
+    ```
+    Django
+    pdfplumber
+    sentence-transformers
+    nltk
+    rank-bm25
+    numpy
+    ```
+    Then install them:
     ```bash
     pip install -r requirements.txt
     ```
-    (Note: You'll need to create a `requirements.txt` file containing `Django`, `pdfplumber`, `sentence-transformers`, `nltk`, `rank-bm25`, and `numpy`).
-
 4.  **Download NLTK Resources**:
-    The provided Python script automatically downloads required NLTK data (`punkt`, `stopwords`, `wordnet`) if they are not already present.
+    The provided Python script (likely in `home/utils.py` or similar) automatically downloads required NLTK data (`punkt`, `stopwords`, `wordnet`) if they are not already present.
+
+5.  **Run Migrations**:
+    ```bash
+    python manage.py makemigrations home accounts
+    python manage.py migrate
+    ```
 
 ---
 
 ## Usage
 
-1.  **Integrate with Django**: Ensure the provided Python script (or its functions) is properly integrated into your Django project's views or management commands to process PDFs and execute searches.
-2.  **Process Documents**: Use a Django management command or an administrative interface to upload and process your academic PDF files. The `process_pdf` function will extract data and generate embeddings for each document.
-3.  **Run the Django App**:
+1.  **Process Documents**:
+    You will need a mechanism (e.g., a Django management command or an admin interface) to upload PDF files to the `media/` directory. Once uploaded, trigger the `process_pdf` function (likely from `home/utils.py`) to extract content and generate embeddings, storing this data in your Django models (e.g., defined in `home/models.py`).
+
+2.  **Run the Django Development Server**:
     ```bash
     python manage.py runserver
     ```
-4.  **Search**: Access your Django application's search interface in a web browser. Enter your academic queries, and the system will leverage its hybrid algorithm to return the most relevant papers, ranked by a combined score.
+3.  **Access the Search Engine**:
+    Open your web browser and navigate to the appropriate URL (e.g., `http://127.0.0.1:8000/search/` if configured in `searchengine/urls.py` and `home/urls.py`). You can then enter your academic queries into the search interface. The system will process your query, perform a hybrid search using the indexed documents, and display the most relevant results.
 
 ---
 
-## Code Structure
+## Core Components (within `home/utils.py` or similar)
 
-* **`engine/`**: (Assuming this is where your provided Python code resides or is integrated).
-    * `__init__.py`: Handles initial setup, including NLTK resource downloads.
-    * `process_pdf(file_path)`: Extracts text, metadata, and generates embeddings for a given PDF file.
-    * `tokenize(text)`: Normalizes text, removes stopwords, and lemmatizes tokens.
-    * `get_model()`: Lazy-loads the `SentenceTransformer` model.
-    * `correct_spell(query, corpus_words)`: Corrects spelling in the query.
-    * `expand_query(query)`: Expands the query with synonyms.
-    * `to_numpy(vec)`: Converts embeddings to NumPy arrays.
-    * `_build_bm25_corpus(docs, field_boosts)`: Creates a BM25 corpus with field boosting.
-    * `_author_overlap_bonus(query_tokens, author_text)`: Calculates bonus for author overlap.
-    * `hybrid_search(query, docs, ...)`: The main function that orchestrates the hybrid search process, combining BM25, semantic similarity, and author boosting.
-* **`myproject/`** (or your Django project's root):
-    * `settings.py`: Django project settings.
-    * `urls.py`: URL routing for the project.
-* **`myapp/`** (or your specific Django app, e.g., `search_app`):
-    * `models.py`: Defines Django models for storing processed document data (e.g., author, title, summary, embedding).
-    * `views.py`: Contains the logic for handling web requests and rendering search results.
-    * `templates/`: HTML files for the user interface.
-    * `static/`: CSS, JavaScript, and other static assets.
+* **`__init__.py`**: Ensures NLTK resources are available.
+* **`process_pdf(file_path)`**: The function responsible for:
+    * Opening and extracting text/metadata from PDF files using `pdfplumber`.
+    * Tokenizing, removing stopwords, and lemmatizing text with `nltk`.
+    * Generating a normalized vector `embedding` using `SentenceTransformer`.
+    * Identifying common `keywords` from the document.
+    * Returning a dictionary of extracted information and the embedding.
+* **`tokenize(text)`**: Preprocesses text for search, converting to lowercase, removing non-alphanumeric characters, stemming/lemmatizing, and removing common stopwords.
+* **`get_model()`**: Lazily loads the `all-MiniLM-L6-v2` `SentenceTransformer` model to conserve memory and optimize performance.
+* **`correct_spell(query, corpus_words)`**: Enhances query quality by correcting common spelling mistakes against a defined vocabulary.
+* **`expand_query(query)`**: Further enriches the query by adding synonyms using `nltk.corpus.wordnet`, broadening the search scope.
+* **`hybrid_search(query, docs, ...)`**: The main search orchestrator that:
+    * Preprocesses the user `query` (spell correction, expansion).
+    * Calculates **BM25 scores** based on boosted document fields (author, title, keywords, abstract, summary).
+    * Calculates **semantic similarity scores** between the query embedding and document embeddings.
+    * Combines these scores using configurable `bm25_weight` and `sem_weight`.
+    * Applies an **author overlap bonus** and a strong boost for exact/contained author name matches.
+    * Ranks documents by the final combined score and returns the top `limit` results.
 
 ---
-
-## Dependencies
-
-* **Django**: A high-level Python Web framework that encourages rapid development and clean, pragmatic design.
-* **pdfplumber**: A library for extracting text and data from PDFs.
-* **nltk**: The Natural Language Toolkit, used for text processing tasks like tokenization, stopword removal, lemmatization, and synonym expansion.
-* **sentence-transformers**: A Python framework for state-of-the-art sentence, text and image embeddings.
-* **rank-bm25**: A simple, cython-optimized library for BM25 ranking.
-* **numpy**: A fundamental package for scientific computing with Python.
-* **difflib**: A Python module that provides classes and functions for comparing sequences.
+# **🤖 Author**
+Jakir Hussain
