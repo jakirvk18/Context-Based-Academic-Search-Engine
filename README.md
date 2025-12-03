@@ -19,14 +19,6 @@ This Django application is a powerful, context-based search engine designed for 
 
 ---
 
-
-
-# Context-Based-Academic-Search-Engine 📚
-
-This Django application is a powerful, context-based search engine designed for academic documents. It uses a **hybrid search** approach to provide highly relevant and accurate results by combining traditional keyword matching with modern semantic search capabilities.
-
----
-
 ## Features
 
 * **Intelligent PDF Processing**: Extracts key information such as author, title, abstract, and full text directly from PDF files. This data is then used to enrich the search index.
