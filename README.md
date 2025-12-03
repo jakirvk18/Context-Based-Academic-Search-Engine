@@ -21,7 +21,6 @@ This Django application is a powerful, context-based search engine designed for 
 
 ## Folder Structure
 ```bash
-Markdown
 
 # Context-Based-Academic-Search-Engine 📚
 
