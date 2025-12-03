@@ -19,8 +19,7 @@ This Django application is a powerful, context-based search engine designed for 
 
 ---
 
-## Folder Structure
-```bash
+
 
 # Context-Based-Academic-Search-Engine 📚
 
@@ -42,8 +41,8 @@ This Django application is a powerful, context-based search engine designed for 
 * **Robust Indexing**: Processes and indexes academic PDF documents to create a searchable database. This includes building a rich vocabulary used for spell correction and semantic matching.
 
 ---
-
 ## Folder Structure
+```bash
 
 searchengine/  
 ├── accounts/                  # Django app for user authentication, registration, profiles
